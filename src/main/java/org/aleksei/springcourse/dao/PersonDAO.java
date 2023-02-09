@@ -1,5 +1,6 @@
 package org.aleksei.springcourse.dao;
 
+import org.aleksei.springcourse.models.Mood;
 import org.aleksei.springcourse.models.Person;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +35,8 @@ public class PersonDAO {
 
     @Transactional
     public void save(Person person) {
+        person.setMood(Mood.CALM);
+        person.setCreatedAt(new Date());
         Session session = sessionFactory.getCurrentSession();
         session.save(person);
     }
