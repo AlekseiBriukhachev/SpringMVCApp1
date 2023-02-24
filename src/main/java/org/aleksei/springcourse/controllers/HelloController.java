@@ -1,4 +1,4 @@
-package com.aleksei.springcourse.springbootapp.controllers;
+package org.aleksei.springcourse.controllers;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
