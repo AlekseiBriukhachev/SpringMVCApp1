@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,22 +35,13 @@ public class PeopleService {
 
     @Transactional
     public void save(Person person){
+        enrichPerson(person);
         peopleRepository.save(person);
     }
-    @ExceptionHandler
-    private ResponseEntity<PersonErrorResponse> handleException(PersonNotFoundException ex){
-        PersonErrorResponse response = new PersonErrorResponse(
-                "Person with this id is not found",
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-    @ExceptionHandler
-    private ResponseEntity<PersonErrorResponse> handleException(PersonNotCreatedException ex){
-        PersonErrorResponse response = new PersonErrorResponse(
-                ex.getMessage(),
-                System.currentTimeMillis()
-        );
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+
+    private void enrichPerson(Person person) {
+        person.setCreatedAt(LocalDateTime.now());
+        person.setUpdatedAt(LocalDateTime.now());
+        person.setCreatedWho("ADMIN");
     }
 }
