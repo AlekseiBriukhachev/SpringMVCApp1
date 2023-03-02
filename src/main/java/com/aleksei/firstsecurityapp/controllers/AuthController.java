@@ -1,5 +1,6 @@
 package com.aleksei.firstsecurityapp.controllers;
 
+import com.aleksei.firstsecurityapp.dto.AuthenticationDTO;
 import com.aleksei.firstsecurityapp.dto.PersonDTO;
 import com.aleksei.firstsecurityapp.models.Person;
 import com.aleksei.firstsecurityapp.security.JWTUtil;
@@ -7,6 +8,7 @@ import com.aleksei.firstsecurityapp.services.RegistrationService;
 import com.aleksei.firstsecurityapp.utils.PersonValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +32,6 @@ public class AuthController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping("/login")
-    public String loginPage(){
-        return "auth/login";
-    }
-    @GetMapping("/registration")
-    public String registrationPage(@RequestBody @Valid PersonDTO personDTO){
-        return "/auth/registration";
-    }
     @PostMapping("/registration")
     public Map<String, String> performRegistration(@RequestBody @Valid PersonDTO personDTO,
                                       BindingResult bindingResult){
@@ -52,6 +46,10 @@ public class AuthController {
 
         String token = jwtUtil.generateToken(personDTO.getUsername());
         return Map.of("jwt_token", token);
+    }
+    @PostMapping("/login")
+    public Map<String, String> performLogin(@RequestBody AuthenticationDTO authenticationDTO) {
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
     }
     public Person convertToPerson(PersonDTO personDTO){
         return this.modelMapper.map(personDTO, Person.class);
